@@ -1,291 +1,503 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Panel Semanal Interactivo</title>
-    <style>
-        :root {
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --primary: #4a90e2;
-            --primary-hover: #357abd;
-            --text: #333333;
-            --text-light: #666666;
-            --border: #dddddd;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text);
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        h1 {
-            font-size: 1.5rem;
-            text-align: center;
-            margin-top: 0;
-            color: var(--primary);
-        }
-        /* Días de la semana */
-        .days-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 5px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-        .day-btn {
-            flex: 1;
-            min-width: 45px;
-            padding: 10px 5px;
-            border: 1px solid var(--border);
-            background: var(--card-bg);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.85rem;
-            text-align: center;
-            transition: all 0.2s ease;
-        }
-        .day-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        /* Progreso */
-        .progress-box {
-            background: #eef2f7;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        .progress-bar-bg {
-            background: var(--border);
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: var(--success);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        /* Input de Tareas */
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .input-group input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-        }
-        .input-group button {
-            padding: 12px 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .input-group button:hover {
-            background: var(--primary-hover);
-        }
-        /* Lista de Tareas */
-        .task-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .task-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            animation: fadeIn 0.2s ease;
-        }
-        .task-item:last-child {
-            border-bottom: none;
-        }
-        .task-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-        }
-        .task-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        .task-text {
-            font-size: 1rem;
-            word-break: break-word;
-        }
-        .task-item.completed .task-text {
-            text-decoration: line-through;
-            color: var(--text-light);
-        }
-        .delete-btn {
-            background: none;
-            border: none;
-            color: var(--danger);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0 5px;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Semanal</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --text: #334155;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 16px 12px;
+      display: flex;
+      justify-content: center;
+    }
+    .panel-card {
+      background: var(--card);
+      width: 100%;
+      max-width: 520px;
+      border-radius: 18px;
+      padding: 20px 16px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+    }
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .days-nav {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin-bottom: 16px;
+    }
+    .day-btn {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 2px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .day-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+    }
+    .progress-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+    .toolbar span {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .sort-btn {
+      background: #eff6ff;
+      color: var(--primary-dark);
+      border: 1px solid #bfdbfe;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .add-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      background: #f8fafc;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .add-row-top {
+      display: flex;
+      gap: 8px;
+    }
+    .task-input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      outline: none;
+      background: #ffffff;
+    }
+    .task-input:focus {
+      border-color: var(--primary);
+    }
+    .add-row-bottom {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .time-input, .ampm-select, .prio-select {
+      padding: 8px 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      background: #ffffff;
+      color: var(--text);
+      outline: none;
+    }
+    .time-input { width: 95px; }
+    .ampm-select { width: 68px; font-weight: 600; }
+    .prio-select { flex: 1; font-weight: 600; }
+    .add-btn {
+      background: var(--primary-dark);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .task-list { list-style: none; }
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 4px;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+    .task-left input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .task-text {
+      font-size: 0.86rem;
+      color: var(--text);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+    /* Bloque Derecho: [ X ] -> [ Hora AM/PM ] -> [ Prioridad ] */
+    .task-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .del-btn {
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 2px 5px;
+      line-height: 1;
+      border-radius: 4px;
+    }
+    .del-btn:hover { background: #fee2e2; }
+    .time-badge {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 6px;
+      border-radius: 6px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .prio-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .prio-1 { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+    .prio-2 { background: #ffedd5; color: #ea580c; border: 1px solid #fed7aa; }
+    .prio-3 { background: #fef9c3; color: #ca8a04; border: 1px solid #fde047; }
+    .prio-4 { background: #dbeafe; color: #2563eb; border: 1px solid #bfdbfe; }
+    .prio-5 { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h1 id="panel-title">Mi Panel Semanal</h1>
-    
-    <!-- Selector de Días -->
-    <div class="days-container">
-        <button class="day-btn active" onclick="switchDay('Lunes')">Lun</button>
-        <button class="day-btn" onclick="switchDay('Martes')">Mar</button>
-        <button class="day-btn" onclick="switchDay('Miércoles')">Mié</button>
-        <button class="day-btn" onclick="switchDay('Jueves')">Jue</button>
-        <button class="day-btn" onclick="switchDay('Viernes')">Vie</button>
-        <button class="day-btn" onclick="switchDay('Sábado')">Sáb</button>
-        <button class="day-btn" onclick="switchDay('Domingo')">Dom</button>
-    </div>
+  <div class="panel-card">
+    <h1 id="panelTitle">Panel Semanal - Jueves</h1>
 
-    <!-- Barra de Progreso -->
+    <div class="days-nav" id="daysNav"></div>
+
     <div class="progress-box">
-        <div class="progress-text">
-            <span>Progreso del día</span>
-            <span id="progress-percentage">0%</span>
-        </div>
-        <div class="progress-bar-bg">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
+      <div class="progress-header">
+        <span>Progreso del día</span>
+        <span id="progressText">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
     </div>
 
-    <!-- Añadir Tarea -->
-    <div class="input-group">
-        <input type="text" id="task-input" placeholder="Nueva tarea para hoy..." onkeypress="handleKeyPress(event)">
-        <button onclick="addTask()">+</button>
+    <div class="add-form">
+      <div class="add-row-top">
+        <input type="text" id="taskInput" class="task-input" placeholder="Nueva tarea para el Jueves...">
+      </div>
+      <div class="add-row-bottom">
+        <input type="text" id="timeInput" class="time-input" placeholder="Ej: 8:00 o 2:30">
+        <select id="ampmInput" class="ampm-select">
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+        <select id="prioInput" class="prio-select">
+          <option value="1">P1 - Urgente</option>
+          <option value="2">P2 - Alta</option>
+          <option value="3" selected>P3 - Media</option>
+          <option value="4">P4 - Normal</option>
+          <option value="5">P5 - Baja</option>
+        </select>
+        <button class="add-btn" onclick="addTask()" title="Agregar tarea">+</button>
+      </div>
     </div>
 
-    <!-- Lista de Tareas -->
-    <ul class="task-list" id="task-list"></ul>
-</div>
+    <div class="toolbar">
+      <span>Toca la hora o el N° para editarlos</span>
+      <button class="sort-btn" onclick="sortByPriority()">⇅ Ordenar por Prioridad</button>
+    </div>
 
-<script>
-    let currentDay = 'Lunes';
-    let data = JSON.parse(localStorage.getItem('weekly_productivity_data')) || {
-        Lunes: [], Martes: [], Miércoles: [], Jueves: [], Viernes: [], Sábado: [], Domingo: []
+    <ul class="task-list" id="taskList"></ul>
+  </div>
+
+  <script>
+    const days = [
+      { key: "Lun", name: "Lunes" },
+      { key: "Mar", name: "Martes" },
+      { key: "Mié", name: "Miércoles" },
+      { key: "Jue", name: "Jueves" },
+      { key: "Vie", name: "Viernes" },
+      { key: "Sáb", name: "Sábado" },
+      { key: "Dom", name: "Domingo" }
+    ];
+
+    let currentDay = "Jue";
+
+    const initialData = {
+      "Lun": [
+        { text: "Salir a correr 10 km", done: false, time: "5:30 AM", prio: 1 },
+        { text: "Tareas de la casa (40m) y necesidades (40m)", done: false, time: "7:30 AM", prio: 3 },
+        { text: "Trabajar en diseño del emprendimiento", done: false, time: "9:30 AM", prio: 1 },
+        { text: "Ayuda de Psicología en la U", done: false, time: "2:00 PM", prio: 1 },
+        { text: "Clases de la Universidad", done: false, time: "6:00 PM", prio: 1 },
+        { text: "Leer El Club de las 5 AM", done: false, time: "9:30 PM", prio: 2 }
+      ],
+      "Mar": [
+        { text: "Leer El Club de las 5 AM", done: false, time: "5:00 AM", prio: 2 },
+        { text: "Ejercicios de fuerza en casa", done: false, time: "6:00 AM", prio: 2 },
+        { text: "Tareas de la iglesia (5-10 min)", done: false, time: "8:30 AM", prio: 3 },
+        { text: "Avanzar proyectos universitarios", done: false, time: "9:00 AM", prio: 1 },
+        { text: "Diseño del emprendimiento", done: false, time: "2:00 PM", prio: 1 }
+      ],
+      "Mié": [
+        { text: "Leer El Club de las 5 AM", done: false, time: "5:00 AM", prio: 2 },
+        { text: "Bañarse y alistarse para ir a la U", done: false, time: "11:30 AM", prio: 1 },
+        { text: "Almorzar en la U", done: false, time: "1:30 PM", prio: 3 },
+        { text: "Trabajar concentrado en la U", done: false, time: "2:15 PM", prio: 1 }
+      ],
+      "Jue": [
+        { text: "Crear bocetos", done: false, time: "8:00 AM", prio: 1 },
+        { text: "Configurar tamaños", done: false, time: "8:30 AM", prio: 2 },
+        { text: "Imprimir", done: false, time: "9:00 AM", prio: 2 },
+        { text: "SEGUIR INSTRUCCIONES EN NOTAS", done: false, time: "9:15 AM", prio: 2 },
+        { text: "Tomar fotos etiquetas abiertas", done: false, time: "9:30 AM", prio: 3 },
+        { text: "Montar empaque y tomarle foto desplegado", done: false, time: "9:45 AM", prio: 3 },
+        { text: "Montar etiquetas", done: false, time: "10:00 AM", prio: 3 },
+        { text: "Tomar foto a etiquetas y empaque armados", done: false, time: "10:15 AM", prio: 3 },
+        { text: "Terminar presentación (agregar bocetos y anexar los finales)", done: false, time: "10:30 AM", prio: 1 },
+        { text: "Grabar clips Luvelle", done: false, time: "11:00 AM", prio: 2 },
+        { text: "Editar clips Luvelle", done: false, time: "11:30 AM", prio: 2 },
+        { text: "Preparar LÍNEA GRÁFICA AETHER", done: false, time: "1:30 PM", prio: 1 },
+        { text: "ENVIAR LÍNEA GRÁFICA AETHER", done: false, time: "2:00 PM", prio: 1 },
+        { text: "(SOLO CON APROBADO) ELEMENTOS GRÁFICOS AETHER", done: false, time: "4:00 PM", prio: 2 },
+        { text: "DIENTES (1/3)", done: false, time: "7:30 AM", prio: 4 },
+        { text: "DIENTES (2/3)", done: false, time: "1:00 PM", prio: 4 },
+        { text: "DIENTES (3/3)", done: false, time: "9:30 PM", prio: 4 },
+        { text: "ALISTAR BOLSO", done: false, time: "11:15 AM", prio: 3 },
+        { text: "Y AGUA", done: false, time: "11:20 AM", prio: 4 },
+        { text: "REVISAR CARGA BATERÍA", done: false, time: "11:25 AM", prio: 3 },
+        { text: "LEER", done: false, time: "10:00 PM", prio: 2 }
+      ],
+      "Vie": [
+        { text: "Levantarse y salir a Voleibol", done: false, time: "4:50 AM", prio: 1 },
+        { text: "Entrenamiento de Voleibol", done: false, time: "7:00 AM", prio: 1 },
+        { text: "Diseño emprendimiento / Proyectos", done: false, time: "2:00 PM", prio: 2 },
+        { text: "Alistarse e ir a Iglesia / Catequesis", done: false, time: "6:50 PM", prio: 1 }
+      ],
+      "Sáb": [
+        { text: "Avanzar tareas para clases del lunes", done: false, time: "9:00 AM", prio: 1 },
+        { text: "Curso de Illustrator / Camisas / Edición", done: false, time: "2:30 PM", prio: 2 },
+        { text: "Salidas / Sesiones de fotos", done: false, time: "4:30 PM", prio: 4 }
+      ],
+      "Dom": [
+        { text: "Tiempo en familia / Descanso", done: false, time: "10:00 AM", prio: 3 },
+        { text: "Edición de foto o video pendiente", done: false, time: "3:00 PM", prio: 2 },
+        { text: "Alistar todo para correr el lunes", done: false, time: "8:30 PM", prio: 1 }
+      ]
     };
 
-    function switchDay(day) {
-        currentDay = day;
-        document.querySelectorAll('.day-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.innerText === day.substring(0,3) || (day==='Miércoles' && btn.innerText==='Mié') || (day==='Sábado' && btn.innerText==='Sáb'));
-        });
-        document.getElementById('panel-title').innerText = `Panel Semanal - ${day}`;
-        document.getElementById('task-input').placeholder = `Nueva tarea para el ${day}...`;
-        renderTasks();
+    let weeklyTasks = JSON.parse(localStorage.getItem("githubPanelTasksCleanV1")) || initialData;
+
+    function saveData() {
+      localStorage.setItem("githubPanelTasksCleanV1", JSON.stringify(weeklyTasks));
     }
 
-    function renderTasks() {
-        const list = document.getElementById('task-list');
-        list.innerHTML = '';
-        const tasks = data[currentDay];
+    function renderDaysNav() {
+      const nav = document.getElementById("daysNav");
+      nav.innerHTML = "";
+      days.forEach(d => {
+        const btn = document.createElement("button");
+        btn.className = `day-btn ${d.key === currentDay ? "active" : ""}`;
+        btn.innerText = d.key;
+        btn.onclick = () => {
+          currentDay = d.key;
+          renderAll();
+        };
+        nav.appendChild(btn);
+      });
+    }
 
-        tasks.forEach((task, index) => {
-            const li = document.createElement('li');
-            li.className = `task-item ${task.completed ? 'completed' : ''}`;
-            li.innerHTML = `
-                <div class="task-left">
-                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${index})">
-                    <span class="task-text">${task.text}</span>
-                </div>
-                <button class="delete-btn" onclick="deleteTask(${index})">×</button>
-            `;
-            list.appendChild(li);
-        });
+    function renderAll() {
+      const dayObj = days.find(d => d.key === currentDay);
+      document.getElementById("panelTitle").innerText = `Panel Semanal - ${dayObj.name}`;
+      document.getElementById("taskInput").placeholder = `Nueva tarea para el ${dayObj.name}...`;
 
-        updateProgress();
-        saveData();
+      renderDaysNav();
+
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+      const tasks = weeklyTasks[currentDay] || [];
+
+      let completedCount = 0;
+
+      tasks.forEach((t, idx) => {
+        if (t.done) completedCount++;
+        const prioVal = t.prio || 3;
+        const timeVal = t.time || "S/H";
+
+        const li = document.createElement("li");
+        li.className = `task-item ${t.done ? "completed" : ""}`;
+
+        li.innerHTML = `
+          <div class="task-left">
+            <input type="checkbox" ${t.done ? "checked" : ""} onchange="toggleTask(${idx})">
+            <span class="task-text">${t.text}</span>
+          </div>
+          <div class="task-right">
+            <button class="del-btn" onclick="deleteTask(${idx})" title="Eliminar">×</button>
+            <span class="time-badge" onclick="editTime(${idx})" title="Cambiar hora">${timeVal}</span>
+            <span class="prio-badge prio-${prioVal}" onclick="cyclePriority(${idx})" title="Prioridad ${prioVal} (Toca para cambiar)">${prioVal}</span>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+
+      const pct = tasks.length ? Math.round((completedCount / tasks.length) * 100) : 0;
+      document.getElementById("progressText").innerText = `${pct}%`;
+      document.getElementById("progressFill").style.width = `${pct}%`;
+
+      saveData();
     }
 
     function addTask() {
-        const input = document.getElementById('task-input');
-        const text = input.value.trim();
-        if (text === '') return;
+      const textEl = document.getElementById("taskInput");
+      const timeEl = document.getElementById("timeInput");
+      const ampmEl = document.getElementById("ampmInput");
+      const prioEl = document.getElementById("prioInput");
 
-        data[currentDay].push({ text: text, completed: false });
-        input.value = '';
-        renderTasks();
+      const text = textEl.value.trim();
+      if (!text) return;
+
+      const rawTime = timeEl.value.trim() || "8:00";
+      const formattedTime = `${rawTime} ${ampmEl.value}`;
+      const prio = parseInt(prioEl.value, 10) || 3;
+
+      if (!weeklyTasks[currentDay]) weeklyTasks[currentDay] = [];
+      weeklyTasks[currentDay].push({
+        text: text,
+        done: false,
+        time: formattedTime,
+        prio: prio
+      });
+
+      textEl.value = "";
+      timeEl.value = "";
+      renderAll();
     }
 
-    function handleKeyPress(e) {
-        if (e.key === 'Enter') addTask();
+    function toggleTask(idx) {
+      weeklyTasks[currentDay][idx].done = !weeklyTasks[currentDay][idx].done;
+      renderAll();
     }
 
-    function toggleTask(index) {
-        data[currentDay][index].completed = !data[currentDay][index].completed;
-        renderTasks();
+    function deleteTask(idx) {
+      weeklyTasks[currentDay].splice(idx, 1);
+      renderAll();
     }
 
-    function deleteTask(index) {
-        data[currentDay].splice(index, 1);
-        renderTasks();
+    function editTime(idx) {
+      const current = weeklyTasks[currentDay][idx].time || "8:00 AM";
+      const newTime = prompt("Escribe la hora programada (ej. 9:30 AM o 4:00 PM):", current);
+      if (newTime !== null && newTime.trim() !== "") {
+        weeklyTasks[currentDay][idx].time = newTime.trim().toUpperCase();
+        renderAll();
+      }
     }
 
-    function updateProgress() {
-        const tasks = data[currentDay];
-        const total = tasks.length;
-        const completed = tasks.filter(t => t.completed).length;
-        const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
-
-        document.getElementById('progress-bar').style.width = `${percentage}%`;
-        document.getElementById('progress-percentage').innerText = `${percentage}%`;
+    function cyclePriority(idx) {
+      let currentPrio = weeklyTasks[currentDay][idx].prio || 3;
+      currentPrio = currentPrio >= 5 ? 1 : currentPrio + 1;
+      weeklyTasks[currentDay][idx].prio = currentPrio;
+      renderAll();
     }
 
-    function saveData() {
-        localStorage.setItem('weekly_productivity_data', JSON.stringify(data));
+    function sortByPriority() {
+      if (!weeklyTasks[currentDay]) return;
+      weeklyTasks[currentDay].sort((a, b) => (a.prio || 3) - (b.prio || 3));
+      renderAll();
     }
 
-    // Inicializar día actual de la semana de forma inteligente
-    const daysMap = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    const today = daysMap[new Date().getDay()];
-    switchDay(today);
-</script>
-
+    renderAll();
+  </script>
 </body>
 </html>
